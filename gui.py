@@ -1,7 +1,7 @@
 import tkinter as tk
 from selenium import webdriver
 import time
-from soup import get_soup
+from soup import get_OP_soup
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from credentials import ID, PASSWORD 
@@ -36,7 +36,7 @@ def grab_posts(scrolls_num):
         with open("page.html", "w", encoding="utf-8") as f:
             f.write(html_content)
         time.sleep(1)
-        posts+=get_soup()
+        posts+=get_OP_soup()
         # print_posts(posts)
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)  # Wait for 2 seconds after each scroll
