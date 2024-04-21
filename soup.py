@@ -41,10 +41,13 @@ def get_soup():
         date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
 
         stats = c.find_all('span', attrs={'data-testid': 'app-text-transition-container'})
+        num_reply = 0
+        if stats[0].text!='':
+            num_reply=int(stats[0].text)
 
         url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
 
-        posts.append(Post(tag.text, date.text, message.text, stats[0].text, "https://twitter.com" + url_element.get('href')))
+        posts.append(Post(tag.text, date.text, message.text, num_reply, "https://twitter.com" + url_element.get('href')))
         
         # print(tag.text)
         # print(date.text)
