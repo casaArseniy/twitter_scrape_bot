@@ -4,10 +4,8 @@ import time
 from soup import get_soup
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from credentials import ID, PASSWORD 
 
-
-ID = "LukeRy243142"
-PASSWORD = "Lucky7!@#$"
 N = 5
 driver = webdriver.Chrome()
 
