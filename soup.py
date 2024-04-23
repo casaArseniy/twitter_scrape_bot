@@ -14,8 +14,9 @@ def get_soup():
         with open(html_doc, 'r', encoding='utf-8') as html_file:
             # Create a BeautifulSoup object
             soup = BeautifulSoup(html_file, 'html.parser')
-    
-    return soup
+            return soup
+    else:
+        print("AAAAAAAAAAAAAAA!")
 
 
 def get_OP_soup():
@@ -40,21 +41,41 @@ def get_OP_soup():
 
 def get_COMMENTER_soup():
     soup = get_soup()
-    cards = soup.find_all('div', class_='css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu')
+    # cards = soup.find_all('div', class_='css-175oi2r r-1igl3o0 r-qklmqi r-1adg3ll r-1ny4l3l')
+    cards = soup.find_all('div', {'data-testid': 'cellInnerDiv'})
+    #css-175oi2r r-1wtj0ep r-ymttw5 r-1f1sjgu r-1ny4l3l
     posts = []
-    for c in cards:
-        message = c.find('div', class_='css-1rynq56 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim')
-        # name_at_date = c.find('div', class_='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1awozwy r-18u37iz')
-        tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
-        date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
+    for c in cards[1:]:
 
-        stats = c.find_all('span', attrs={'data-testid': 'app-text-transition-container'})
-        num_reply = 0
-        if stats[0].text!='':
-            num_reply=int(stats[0].text)
+        #show more replies
+        if c.find('div', class_ = 'css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-q4m81j r-a023e6 r-rjixqe r-16dba41'):
+            break
+        # discover more
+        if c.find('div', class_ = 'css-175oi2r r-k200y r-z80fyv r-1777fci'):
+            break
+        
+        try:
+            message = c.find('div', class_='css-1rynq56 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim')
+            # name_at_date = c.find('div', class_='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1awozwy r-18u37iz')
+            tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
 
-        url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
+            stats = c.find_all('span', attrs={'data-testid': 'app-text-transition-container'})
+            # for s in stats:
+            #     print(s.text)
+            num_reply = 0
+            if stats[0].text!='':
+                num_reply=int(stats[0].text)
 
-        posts.append(Post(tag.text, date.text, message.text, num_reply, "https://twitter.com" + url_element.get('href')))
+            url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
+
+            posts.append(Post(tag.text, date.text, message.text, num_reply, url_element.get('href')))
+        except:
+            continue
+
     return posts
 
+posts = get_COMMENTER_soup()
+
+for p in posts:
+    print(p)
