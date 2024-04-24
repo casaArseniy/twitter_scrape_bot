@@ -45,13 +45,16 @@ def get_COMMENTER_soup():
     cards = soup.find_all('div', {'data-testid': 'cellInnerDiv'})
     #css-175oi2r r-1wtj0ep r-ymttw5 r-1f1sjgu r-1ny4l3l
     posts = []
+    signal = 0
     for c in cards[1:]:
 
         #show more replies
         if c.find('div', class_ = 'css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-q4m81j r-a023e6 r-rjixqe r-16dba41'):
+            signal = 1
             break
         # discover more
         if c.find('div', class_ = 'css-175oi2r r-k200y r-z80fyv r-1777fci'):
+            signal = 1
             break
         
         try:
@@ -73,9 +76,9 @@ def get_COMMENTER_soup():
         except:
             continue
 
-    return posts
+    return posts, signal
 
-posts = get_COMMENTER_soup()
+# posts = get_COMMENTER_soup()
 
-for p in posts:
-    print(p)
+# for p in posts:
+#     print(p)

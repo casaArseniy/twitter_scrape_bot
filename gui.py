@@ -1,10 +1,10 @@
 import tkinter as tk
 from selenium import webdriver
 import time
-from soup import get_OP_soup
+from soup import get_OP_soup, get_COMMENTER_soup
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from credentials import ID, PASSWORD 
+from credentials import ID, PASSWORD
 
 N = 1
 driver = webdriver.Chrome()
@@ -25,44 +25,59 @@ def login(ID, PASSWORD):
     input_element.send_keys(PASSWORD)
     input_element.send_keys(Keys.ENTER)
 
-def print_posts(posts):
+def print_OP_posts(posts):
     for p in posts:
         print(p)
 
-def grab_posts(scrolls_num):
+def print_COMMENTER_posts(posts):
+    for COMMENTER_pst in posts:
+        print(COMMENTER_pst)
+
+def get_OP_posts():
+    global N
     posts = []
-    for i in range(scrolls_num):  # Scroll down 5 times, adjust as needed
+    for i in range(N):  # Scroll down N times, adjust as needed
         html_content = driver.page_source
+        time.sleep(1)
         with open("page.html", "w", encoding="utf-8") as f:
             f.write(html_content)
-        time.sleep(1)
         posts+=get_OP_soup()
-        # print_posts(posts)
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)  # Wait for 2 seconds after each scroll
     return posts
 
-def access_posts(type):
-    global OP_POSTS
-    global COMMENTER_POSTS
-    global N
+def get_COMMENTER_posts(OP_pst):
+    posts = []
+    signal = 0
+    index = 0
+    driver.get(OP_pst.url)
+    time.sleep(1)
+    while (signal == 0 and signal<2):  # Scroll down N times, adjust as needed
+        html_content = driver.page_source
+        with open("page.html", "w", encoding="utf-8") as f:
+            f.write(html_content)
+        pst, signal = get_COMMENTER_soup()
+        posts+=pst
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)  # Wait for 2 seconds after each scroll
+        index +=1
+    return posts
 
-    if type == 0: # OP
-        OP_POSTS = grab_posts(N)
-        print_posts(OP_POSTS)
-    else:
-        get_commenter_posts()
-        print_posts(COMMENTER_POSTS)
-
-def get_commenter_posts():
+def access_OP_posts():
     global OP_POSTS
+    OP_POSTS = get_OP_posts()
+    # do something with them
+    print_OP_posts(OP_POSTS)
+
+def access_COMMENTER_posts():
     global COMMENTER_POSTS
+    global OP_POSTS
 
     for post in OP_POSTS:
-        if post.num_replies >=2:
-            driver.get(post.url)
-            time.sleep(3)
-            COMMENTER_POSTS.append(grab_posts(3))
+        COMMENTER_POSTS.append(get_COMMENTER_posts(post))
+    # do something with them
+    for posts in COMMENTER_POSTS:
+        print_COMMENTER_posts(posts)
 
 
 def create_GUI():
@@ -77,23 +92,15 @@ def create_GUI():
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     # Function to be executed when the button is clicked
-    button_function_OP = lambda: access_posts(0) # OP posts
-    button_function_COMMENTER = lambda: access_posts(1) # COMMENTER posts
+    button_function_OP = lambda: access_OP_posts() # OP posts
+    button_function_COMMENTER = lambda: access_COMMENTER_posts() # COMMENTER posts
 
     # Create a button widget
     button_OP = tk.Button(root, text="OP POSTS", command=button_function_OP)
     button_OP.pack(pady=20)
-
-    # button_OP = tk.Button(root, text="OP POSTS", command=button_function_OP)
-    # button_OP.pack(pady=20)
 
     button_COMMENTER = tk.Button(root, text="COMMENTER POSTS", command=button_function_COMMENTER)
     button_COMMENTER.pack(pady=20)
 
     # Run the event loop
     root.mainloop()
-
-login(ID, PASSWORD)
-time.sleep(3)
-driver.get("https://twitter.com/Microsoft")
-create_GUI()
