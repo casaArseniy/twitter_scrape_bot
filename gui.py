@@ -4,13 +4,16 @@ import time
 from soup import get_OP_soup, get_COMMENTER_soup
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from credentials import ID, PASSWORD
+from table import *
 
 N = 1
 driver = webdriver.Chrome()
 
 OP_POSTS = []
 COMMENTER_POSTS = []
+
+df_OP = create_Table()
+df_COMM = create_Table()
 
 def login(ID, PASSWORD):
     driver.get("https://twitter.com/i/flow/login")
@@ -34,8 +37,10 @@ def print_COMMENTER_posts(posts):
         print(COMMENTER_pst)
 
 def get_OP_posts():
+
     global N
     posts = []
+
     for i in range(N):  # Scroll down N times, adjust as needed
         html_content = driver.page_source
         time.sleep(1)
@@ -44,14 +49,19 @@ def get_OP_posts():
         posts+=get_OP_soup()
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)  # Wait for 2 seconds after each scroll
-    return posts
+    
+    html = driver.current_url
+    return posts, html
 
 def get_COMMENTER_posts(OP_pst):
     posts = []
     signal = 0
     index = 0
-    driver.get(OP_pst.url)
+    html = OP_pst.url
+
+    driver.get(html)
     time.sleep(1)
+
     while (signal == 0 and signal<2):  # Scroll down N times, adjust as needed
         html_content = driver.page_source
         with open("page.html", "w", encoding="utf-8") as f:
@@ -61,23 +71,39 @@ def get_COMMENTER_posts(OP_pst):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)  # Wait for 2 seconds after each scroll
         index +=1
-    return posts
+
+    return posts, html
 
 def access_OP_posts():
     global OP_POSTS
-    OP_POSTS = get_OP_posts()
+    global df_OP
+    OP_POSTS, html = get_OP_posts()
     # do something with them
-    print_OP_posts(OP_POSTS)
+    for pst in OP_POSTS:
+        df_OP = insert_post_into_Table(df_OP, html, pst)
+    #print_OP_posts(OP_POSTS)
 
 def access_COMMENTER_posts():
     global COMMENTER_POSTS
     global OP_POSTS
+    global df_COMM
 
     for post in OP_POSTS:
-        COMMENTER_POSTS.append(get_COMMENTER_posts(post))
+        cmt_pst, html = get_COMMENTER_posts(post)
+        for pst in cmt_pst:
+            df_COMM = insert_post_into_Table(df_COMM, html, pst)
+
+        COMMENTER_POSTS.append(cmt_pst)
     # do something with them
-    for posts in COMMENTER_POSTS:
-        print_COMMENTER_posts(posts)
+    # for posts in COMMENTER_POSTS:
+    #     print_COMMENTER_posts(posts)
+
+def table_to_csv():
+    global df_OP
+    global df_COMM
+
+    df_OP.to_csv('twitter_scrape_bot/data/OP_Posts.csv', index=False)
+    df_COMM.to_csv('twitter_scrape_bot/data/OP_Comment_Posts.csv', index=False)
 
 
 def create_GUI():
@@ -94,13 +120,17 @@ def create_GUI():
     # Function to be executed when the button is clicked
     button_function_OP = lambda: access_OP_posts() # OP posts
     button_function_COMMENTER = lambda: access_COMMENTER_posts() # COMMENTER posts
+    button_function_EXTRACT = lambda: table_to_csv()
 
     # Create a button widget
-    button_OP = tk.Button(root, text="OP POSTS", command=button_function_OP)
+    button_OP = tk.Button(root, text="OP Posts", command=button_function_OP)
     button_OP.pack(pady=20)
 
-    button_COMMENTER = tk.Button(root, text="COMMENTER POSTS", command=button_function_COMMENTER)
+    button_COMMENTER = tk.Button(root, text="Commenter Posts", command=button_function_COMMENTER)
     button_COMMENTER.pack(pady=20)
+
+    button_EXTRACT = tk.Button(root, text="Extract Data", command=button_function_EXTRACT)
+    button_EXTRACT.pack(pady=20)
 
     # Run the event loop
     root.mainloop()

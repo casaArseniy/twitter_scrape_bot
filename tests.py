@@ -36,20 +36,20 @@ COMMENTER_POSTS = [[test_COMMENTER_Post_1, test_COMMENTER_Post_2], [test_COMMENT
 
 
 # TABLE TEST
-# df_OP_Posts = create_Table()
-# df_COMMENT_Posts = create_Table()
+df_OP_Posts = create_Table()
+df_COMMENT_Posts = create_Table()
 
-# df_OP_Posts = insert_post_into_Table(df_OP_Posts, "OP_post1.com",test_OP_Post_1)
-# df_OP_Posts = insert_post_into_Table(df_OP_Posts, "OP_post2.com",test_OP_Post_2)
+df_OP_Posts = insert_post_into_Table(df_OP_Posts, "OP_post1.com",test_OP_Post_1)
+df_OP_Posts = insert_post_into_Table(df_OP_Posts, "OP_post2.com",test_OP_Post_2)
 
-# df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_1.url,test_COMMENTER_Post_1)
-# df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_1.url,test_COMMENTER_Post_2)
-# df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_3)
-# df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_4)
-# df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_5)
+df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_1.url,test_COMMENTER_Post_1)
+df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_1.url,test_COMMENTER_Post_2)
+df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_3)
+df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_4)
+df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,test_COMMENTER_Post_5)
 
-# print(df_OP_Posts.head())
-# print(df_COMMENT_Posts.head())
+print(df_OP_Posts.head())
+print(df_COMMENT_Posts.head())
 
 
 

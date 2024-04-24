@@ -1,4 +1,5 @@
 from gui import *
+from credentials import ID, PASSWORD
 
 login(ID, PASSWORD)
 time.sleep(3)
