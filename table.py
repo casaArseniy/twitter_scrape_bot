@@ -12,3 +12,6 @@ def insert_post_into_Table(df, html, post):
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     df.loc[len(df.index)] = [html, post.name_tag, post.post_date, post.message, post.num_replies, post.url, dt_string]
     return df
+
+def table_to_csv(df, name):
+    df.to_csv('twitter_scrape_bot/data/'+name+'.csv', index=False)

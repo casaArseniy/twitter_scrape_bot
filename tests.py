@@ -1,5 +1,5 @@
 from gui import *
-from bot_classes import *
+from scrapper_classes.post import Post
 from table import *
 
 test_OP_Post_1 = Post("@OPname1", "April 1st", "Joking OP test1", 2, "http://OPtest1.com")

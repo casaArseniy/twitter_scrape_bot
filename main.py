@@ -1,7 +1,13 @@
-from gui import *
+from gui import create_GUI
 from credentials import ID, PASSWORD
+import time
 
-login(ID, PASSWORD)
-time.sleep(3)
-driver.get("https://twitter.com/Microsoft")
-create_GUI()
+from scrapper_classes.scrapper import Scrapper
+
+s = Scrapper()
+
+s.login(ID, PASSWORD)
+
+time.sleep(5)
+
+create_GUI(s)
