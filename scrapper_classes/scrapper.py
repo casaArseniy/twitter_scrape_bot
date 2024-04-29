@@ -7,26 +7,23 @@ from table import *
 
 class Scrapper():
 
-    OP_POSTS = []
-    COMMENTER_POSTS = []
-    REPLY_POSTS = []
-
-    df_OP = create_Table()
-    df_COMM = create_Table()
-    # df_REPLY = create_Table()
-
-    driver = webdriver.Chrome()
+    def __init__(self):
+        self.df_OP = create_Table()
+        self.df_COMM = create_Table()
+        self.df_REPLY = create_Table()
+        self.name_tags = []
+        self.driver = webdriver.Chrome()
 
     def go_to(self, html):
         self.driver.get(html)
     
     def clear_data(self):
-        self.OP_POSTS = []
-        self.COMMENTER_POSTS = []
-        self.REPLY_POSTS = []
 
         self.df_OP = create_Table()
         self.df_COMM = create_Table()
+        self.df_REPLY = create_Table()
+
+        self.name_tags = []
 
     
     def login(self, ID, PASSWORD):
@@ -46,52 +43,81 @@ class Scrapper():
 
         for i in range(scroll_number):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
+            html = self.driver.current_url
             time.sleep(1)
             with open("page.html", "w", encoding="utf-8") as f:
                 f.write(html_content)
-            self.OP_POSTS += get_OP_soup()
+            
+            psts = get_OP_soup()
+
+            for pst in psts:
+                self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
+
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)  # Wait for 2 seconds after each scroll
-        
-        html = self.driver.current_url
-        # return posts, html
-        return html
     
-    def get_COMMENTER_posts(self, OP_PST):
-
-        posts = []
+    def get_OP_name_tags(self):
+        self.name_tags = set(self.df_OP['Name Tag'])
+    
+    def get_COMMENTER_posts(self, html):
         signal = 0
         index = 0
-        html = OP_PST.url
+        self.driver.get(html)
+        time.sleep(1)
+        while (signal == 0 and index<2):  # Scroll down N times, adjust as needed
+            html_content = self.driver.page_source
+            with open("page.html", "w", encoding="utf-8") as f:
+                f.write(html_content)
+            psts, signal = get_COMMENTER_soup()
+
+            for pst in psts:
+                self.df_COMM = insert_post_into_Table(self.df_COMM, html, pst)     
+
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)  # Wait for 2 seconds after each scroll
+            index +=1
+    
+    def get_REPLY_tags(self, html):
+        signal = 0
+        index = 0
+        name_tags = []
 
         self.driver.get(html)
         time.sleep(1)
 
-        while (signal == 0 and signal<2):  # Scroll down N times, adjust as needed
+        while (signal == 0 and index<2):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
             with open("page.html", "w", encoding="utf-8") as f:
                 f.write(html_content)
-            pst, signal = get_COMMENTER_soup()
-            OP_PST.comments += pst
+            tags, signal = get_COMMENTER_soup()   
+            name_tags += tags
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)  # Wait for 2 seconds after each scroll
             index +=1
-
-        # self.COMMENTER_POSTS.append(posts)
-
-        # return posts, html
-        return html
+        
+        return name_tags
     
     def access_OP_posts(self, scroll_number):
-        html = self.get_OP_posts(scroll_number)
-        for pst in self.OP_POSTS:
-            self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
+        self.get_OP_posts(scroll_number)
     
     def access_COMMENTER_posts(self):
-        for post in self.OP_POSTS:
-            html = self.get_COMMENTER_posts(post)
-            for pst in post.comments:
-                self.df_COMM = insert_post_into_Table(self.df_COMM, html, pst)
+        for index, row in self.df_OP.iterrows():
+            self.get_COMMENTER_posts(row['Post URL'])
+    
+    def access_OP_REPLY_posts(self):
+        self.get_OP_name_tags()
+        for index, row in self.df_COMM.iterrows():
+            if row['Num. of Replies'] > 0:
+                print("HIT!!!")
+                reply_name_tags = set(self.get_REPLY_tags(row['Post URL']))
+                intersection = self.name_tags & reply_name_tags
+                if len(intersection) == 0: # no reply from OP
+                    self.df_COMM.at[index, 'Label'] = 0
+                elif len(intersection) == 1: # reply from OP
+                    self.df_COMM.at[index, 'Label'] = 1
+                else:                   # convo with OP
+                    self.df_COMM.at[index, 'Label'] = 2
+
     
     def save_data(self):
         table_to_csv(self.df_OP, 'OP')
@@ -99,13 +125,3 @@ class Scrapper():
     
     def close(self):
         self.driver.quit()
-
-
-
-# def print_OP_posts(posts):
-#     for p in posts:
-#         print(p)
-
-# def print_COMMENTER_posts(posts):
-#     for COMMENTER_pst in posts:
-#         print(COMMENTER_pst)

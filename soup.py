@@ -39,9 +39,7 @@ def get_OP_soup():
 
 def get_COMMENTER_soup():
     soup = get_soup()
-    # cards = soup.find_all('div', class_='css-175oi2r r-1igl3o0 r-qklmqi r-1adg3ll r-1ny4l3l')
     cards = soup.find_all('div', {'data-testid': 'cellInnerDiv'})
-    #css-175oi2r r-1wtj0ep r-ymttw5 r-1f1sjgu r-1ny4l3l
     posts = []
     signal = 0
     for c in cards[1:]:
@@ -70,13 +68,32 @@ def get_COMMENTER_soup():
 
             url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
 
-            posts.append(Post(tag.text, date.text, message.text, num_reply, url_element.get('href')))
+            posts.append(Post(tag.text, date.text, message.text, num_reply, 'https://twitter.com' + url_element.get('href')))
         except:
             continue
 
     return posts, signal
 
-# posts = get_COMMENTER_soup()
+def get_REPLY_name_tags():
+    soup = get_soup()
+    cards = soup.find_all('div', {'data-testid': 'cellInnerDiv'})
+    name_tags = []
 
-# for p in posts:
-#     print(p)
+    for c in cards[1:]:
+
+        #show more replies
+        if c.find('div', class_ = 'css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-q4m81j r-a023e6 r-rjixqe r-16dba41'):
+            signal = 1
+            break
+        # discover more
+        if c.find('div', class_ = 'css-175oi2r r-k200y r-z80fyv r-1777fci'):
+            signal = 1
+            break
+        
+        try:
+            tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            name_tags+=tag.text
+        except:
+            continue
+
+        return name_tags, signal

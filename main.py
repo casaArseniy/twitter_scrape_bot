@@ -1,13 +1,15 @@
-from gui import create_GUI
+from gui import *
 from credentials import ID, PASSWORD
 import time
 
 from scrapper_classes.scrapper import Scrapper
 
-s = Scrapper()
+# s = Scrapper()
 
-s.login(ID, PASSWORD)
+s = 1
 
-time.sleep(5)
+# s.login(ID, PASSWORD)
 
-create_GUI(s)
+# time.sleep(5)
+
+main_menu_GUI(s)

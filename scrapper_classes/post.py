@@ -8,6 +8,7 @@ class Post:
         self.message = message
         self.num_replies = num_replies
         self.url = url
+        self.label = -1
     
     # def store_comment(self, post)
     #     self.comments.append(post)
