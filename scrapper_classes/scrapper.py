@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -118,10 +119,18 @@ class Scrapper():
                 else:                   # convo with OP
                     self.df_COMM.at[index, 'Label'] = 2
 
+    def save_data(self, name):
+        table_to_csv(self.df_OP, name+'_posts')
+        table_to_csv(self.df_COMM, name+'_post_comments')
+
     
-    def save_data(self):
-        table_to_csv(self.df_OP, 'OP')
-        table_to_csv(self.df_COMM, 'COMMENTER')
+    def scrape(self, htmls, scroll_number):
+        for html in htmls:
+            self.go_to(html)
+            self.access_OP_posts(scroll_number)
+            self.access_COMMENTER_posts()
+            self.access_OP_REPLY_posts()
+            self.save_data(html[20:])
     
     def close(self):
         self.driver.quit()
