@@ -19,3 +19,6 @@ This Python application is designed to scrape posts from X (Twitter) without usi
 ID = "Twitter ID"
 PASSWORD = "Twitter Password"
 ```
+## Screenshots
+
+![main menu screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/add_target.png)
