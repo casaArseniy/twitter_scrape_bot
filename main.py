@@ -1,3 +1,4 @@
 from gui import *
 
-main_menu_GUI()
+if __name__ == '__main__':
+    main_menu_GUI()
