@@ -21,9 +21,18 @@ PASSWORD = "Twitter Password"
 ```
 ## Screenshots
 - Main Menu
+  
 ![main_menu screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/main_menu.png)
-- Adding a target, saves the target to target_data.csv file. Add a name for the target and a valid HTML link to their profile. Input error checks are not implemented so you'll have to be careful when inputting links to not break the program. 
+
+- Adding a target, saves the target to target_data.csv file. Add a name for the target and a valid HTML link to their profile. Input error checks are not implemented so you'll have to be careful when inputting links to not break the program.
+
+  
 ![add_target screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/add_target.png)
+
 - You can either target all targets (using the checkmark) on the list or select a single target from the list.
+  
 ![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start.png)
+
+## Testing
+TBD
 
