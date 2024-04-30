@@ -1,6 +1,7 @@
 from gui import *
 from scrapper_classes.post import Post
 from table import *
+from soup import *
 
 test_OP_Post_1 = Post("@OPname1", "April 1st", "Joking OP test1", 2, "http://OPtest1.com")
 test_OP_Post_2 = Post("@OPname2", "April 2nd", "Joking OP test2", 3, "http://OPtest2.com")
@@ -35,7 +36,7 @@ COMMENTER_POSTS = [[test_COMMENTER_Post_1, test_COMMENTER_Post_2], [test_COMMENT
 # print("*******************************************")
 
 
-# TABLE TEST
+# Table Test
 df_OP_Posts = create_Table()
 df_COMMENT_Posts = create_Table()
 
@@ -50,6 +51,10 @@ df_COMMENT_Posts = insert_post_into_Table(df_COMMENT_Posts, test_OP_Post_2.url,t
 
 print(df_OP_Posts.head())
 print(df_COMMENT_Posts.head())
+
+# Scrape test  #<<<<<<<<<<<<----- waiting time test
+# HTML scrape test
+# GUI test
 
 
 
