@@ -23,7 +23,11 @@ def get_OP_soup():
     posts = []
     for c in cards:
         message = c.find('div', class_='css-1rynq56 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim')
-        # name_at_date = c.find('div', class_='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1awozwy r-18u37iz')
+        if message is None:
+            message_text = ''
+        else:
+            message_text = message.text
+
         tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
         date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
 
@@ -34,7 +38,7 @@ def get_OP_soup():
 
         url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
 
-        posts.append(Post(tag.text, date.text, message.text, num_reply, "https://twitter.com" + url_element.get('href')))
+        posts.append(Post(tag.text, date.text, message_text, num_reply, "https://twitter.com" + url_element.get('href')))
     return posts
 
 def get_COMMENTER_soup():
@@ -55,7 +59,10 @@ def get_COMMENTER_soup():
         
         try:
             message = c.find('div', class_='css-1rynq56 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim')
-            # name_at_date = c.find('div', class_='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1awozwy r-18u37iz')
+            if message is None:
+                message_text = ''
+            else:
+                message_text = message.text
             tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
             date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
 
@@ -68,7 +75,7 @@ def get_COMMENTER_soup():
 
             url_element = c.find('a', class_='css-1rynq56 r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21')
 
-            posts.append(Post(tag.text, date.text, message.text, num_reply, 'https://twitter.com' + url_element.get('href')))
+            posts.append(Post(tag.text, date.text, message_text, num_reply, 'https://twitter.com' + url_element.get('href')))
         except:
             continue
 

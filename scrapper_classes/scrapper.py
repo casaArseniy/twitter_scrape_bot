@@ -13,10 +13,14 @@ class Scrapper():
         self.df_COMM = create_Table()
         self.df_REPLY = create_Table()
         self.name_tags = []
+        # self.driver = webdriver.Chrome()
+    
+    def start_driver(self):
         self.driver = webdriver.Chrome()
 
     def go_to(self, html):
         self.driver.get(html)
+        time.sleep(3)
     
     def clear_data(self):
 
@@ -39,17 +43,22 @@ class Scrapper():
         input_element = self.driver.find_element(By.NAME, 'password')
         input_element.send_keys(PASSWORD)
         input_element.send_keys(Keys.ENTER)
+        time.sleep(3)
     
     def get_OP_posts(self, scroll_number):
-
         for i in range(scroll_number):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
             html = self.driver.current_url
+            print("get_OP_posts")
+            print(html)
+            print("---------------")
             time.sleep(1)
             with open("page.html", "w", encoding="utf-8") as f:
                 f.write(html_content)
             
             psts = get_OP_soup()
+
+            print(len(psts))
 
             for pst in psts:
                 self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
@@ -64,7 +73,7 @@ class Scrapper():
         signal = 0
         index = 0
         self.driver.get(html)
-        time.sleep(1)
+        time.sleep(3)
         while (signal == 0 and index<2):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
             with open("page.html", "w", encoding="utf-8") as f:
@@ -84,7 +93,7 @@ class Scrapper():
         name_tags = []
 
         self.driver.get(html)
-        time.sleep(1)
+        time.sleep(3)
 
         while (signal == 0 and index<2):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
@@ -109,7 +118,6 @@ class Scrapper():
         self.get_OP_name_tags()
         for index, row in self.df_COMM.iterrows():
             if row['Num. of Replies'] > 0:
-                print("HIT!!!")
                 reply_name_tags = set(self.get_REPLY_tags(row['Post URL']))
                 intersection = self.name_tags & reply_name_tags
                 if len(intersection) == 0: # no reply from OP
@@ -124,13 +132,20 @@ class Scrapper():
         table_to_csv(self.df_COMM, name+'_post_comments')
 
     
-    def scrape(self, htmls, scroll_number):
+    def scrape(self, htmls, scroll_number, ID, PASSWORD):
+        self.login(ID, PASSWORD)
         for html in htmls:
             self.go_to(html)
+            # print("STEP 1")
             self.access_OP_posts(scroll_number)
+            # print("STEP 2")
             self.access_COMMENTER_posts()
+            # print("STEP 3")
             self.access_OP_REPLY_posts()
+            # print("STEP 4")
             self.save_data(html[20:])
+            # print("STEP 5")
+            self.clear_data()
     
     def close(self):
         self.driver.quit()
