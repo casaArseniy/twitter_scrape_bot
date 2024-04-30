@@ -45,6 +45,12 @@ PASSWORD = "Your Twitter Password"
 - 1: Single reply from target to comment
 - 2: Multiple replies from target to comment (conversation).
 
+# Docker (Under Testing)
+
+```
+sudo docker run -u=$(id -u $USER):$(id -g $USER) -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw -v $(pwd)/app:/app --rm difficult_x_scrapper
+```
+
 ## Testing
 TBD
 
