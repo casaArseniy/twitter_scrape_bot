@@ -9,9 +9,9 @@ from PIL import Image, ImageTk
 
 def main_menu_GUI():
     window = tk.Tk()
-    im = Image.open('twitter_scrape_bot/mri.jpeg')
-    photo = ImageTk.PhotoImage(im)
-    window.iconphoto(True, photo)
+    # im = Image.open('twitter_scrape_bot/mri.jpeg')
+    # photo = ImageTk.PhotoImage(im)
+    # window.iconphoto(True, photo)
     window.title("Menu")
     # window.geometry("300x650")
     window.minsize(300, 450)
