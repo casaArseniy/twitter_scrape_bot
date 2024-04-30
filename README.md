@@ -16,8 +16,8 @@ This Python application is designed to scrape posts from X (Twitter) without usi
 ```
 - Create credentials.py file with variables:
 ```python
-ID = "Twitter ID"
-PASSWORD = "Twitter Password"
+ID = "Your Twitter ID"
+PASSWORD = "Your Twitter Password"
 ```
 ## Screenshots
 - Main Menu
@@ -32,6 +32,18 @@ PASSWORD = "Twitter Password"
 - You can either target all targets (using the checkmark) on the list or select a single target from the list.
   
 ![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start.png)
+
+## Data
+- Tweet data is saved in the **data** folder.
+- **TARGET_NAME_posts.csv** : contains target tweets (e.g.: @Bob posts a tweet).
+- **TARGET_NAME_comments.csv** : contains comments to target tweets by others (e.g.: @John posts a comment).
+- Files contain the following rows: ['Page Source URL', 'Name Tag', 'Post Date', 'Message', 'Num. of Replies', 'Post URL', 'Extraction Date', 'Label']
+  
+#### Labels: 
+- -1: N/A or no replies
+- 0: No replies from target to comment
+- 1: Single reply from target to comment
+- 2: Multiple replies from target to comment (conversation).
 
 ## Testing
 TBD
