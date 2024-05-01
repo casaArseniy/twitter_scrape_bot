@@ -3,8 +3,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from soup import get_OP_soup, get_COMMENTER_soup
-from table import *    
+from resources.soup import get_OP_soup, get_COMMENTER_soup
+from resources.table import *    
 
 class Scrapper():
 
@@ -49,9 +49,6 @@ class Scrapper():
         for i in range(scroll_number):  # Scroll down N times, adjust as needed
             html_content = self.driver.page_source
             html = self.driver.current_url
-            print("get_OP_posts")
-            print(html)
-            print("---------------")
             time.sleep(1)
             with open("page.html", "w", encoding="utf-8") as f:
                 f.write(html_content)

@@ -1,6 +1,7 @@
 import os
 from bs4 import BeautifulSoup
-from scrapper_classes.post import Post
+from resources.scrapper_classes.post import Post
+import sys
 
 def get_soup():
     current_directory = os.getcwd()
@@ -15,6 +16,10 @@ def get_soup():
             # Create a BeautifulSoup object
             soup = BeautifulSoup(html_file, 'html.parser')
             return soup
+    else:
+        sys.exit("No html file found!")
+
+    
 
 
 def get_OP_soup():

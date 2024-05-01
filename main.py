@@ -1,4 +1,4 @@
-from gui import *
+import resources
 
 if __name__ == '__main__':
-    main_menu_GUI()
+    resources.main_menu_GUI()

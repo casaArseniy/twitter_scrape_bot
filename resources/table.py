@@ -14,4 +14,7 @@ def insert_post_into_Table(df, html, post):
     return df
 
 def table_to_csv(df, name):
-    df.to_csv('twitter_scrape_bot/data/'+name+'.csv', index=False)
+    df.to_csv('../twitter_scrape_bot/data/'+name+'.csv', index=False)
+
+# df = create_Table()
+# table_to_csv(df, "TEST")
