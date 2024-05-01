@@ -4,7 +4,10 @@
 # from soup import *
 # from credentials import ID, PASSWORD
 # from scrapper_classes.scrapper import Scrapper 
-from resources import *
+
+import sys
+sys.path.append(".")
+from resources import  *
 
 import unittest
 
@@ -17,7 +20,7 @@ import unittest
 
 # Unit Test 1: Check Soup Functionality
 
-get_OP_soup()
+# get_OP_soup()
 
 
 

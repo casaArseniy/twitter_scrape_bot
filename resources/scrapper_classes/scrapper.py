@@ -55,8 +55,6 @@ class Scrapper():
             
             psts = get_OP_soup()
 
-            print(len(psts))
-
             for pst in psts:
                 self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
 
