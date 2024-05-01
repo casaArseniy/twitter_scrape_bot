@@ -14,7 +14,7 @@ This Python application is designed to scrape posts from X (Twitter) without usi
 ```
     pip install -r requirements.txt
 ```
-- Create credentials.py file with variables:
+- Create resources/credentials.py file with variables:
 ```python
 ID = "Your Twitter ID"
 PASSWORD = "Your Twitter Password"
