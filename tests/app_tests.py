@@ -11,6 +11,8 @@ from resources import  *
 
 import unittest
 
+# to test soup.py extensively need to create a test html page 
+
 class TestScrapper(unittest.TestCase):
     def test_Soup_functionality(self):
         posts_OP = get_OP_soup()
@@ -27,9 +29,6 @@ class TestScrapper(unittest.TestCase):
         test_COMMENTER_Post_3 = Post("@Cname3", "2hr", "OP 2 Commenter test 1", 3, "http://OP2COMtest1.com")
         test_COMMENTER_Post_4 = Post("@Cname4", "1min", "OP 2 Commenter test 2", 4, "http://OP2COMtest2.com")
         test_COMMENTER_Post_5 = Post("@Cname5", "10min", "OP 2 Commenter test 3", 5, "http://OP2COMtest3.com")
-
-        OP_POSTS = [test_OP_Post_1, test_OP_Post_2]
-        COMMENTER_POSTS = [[test_COMMENTER_Post_1, test_COMMENTER_Post_2], [test_COMMENTER_Post_3, test_COMMENTER_Post_4, test_COMMENTER_Post_5]]
 
         s = Scrapper()
 
