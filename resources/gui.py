@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 
 def main_menu_GUI():
     window = tk.Tk()
-    # im = Image.open('twitter_scrape_bot/mri.jpeg')
+    # im = Image.open('mri.jpeg')
     # photo = ImageTk.PhotoImage(im)
     # window.iconphoto(True, photo)
     window.title("Menu")
@@ -19,7 +19,7 @@ def main_menu_GUI():
     # Show all Twitter targets
     def load_csv_data():
         try:
-            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
+            with open('resources/target_data.csv', 'r') as file:
                 reader = csv.reader(file)
                 for row in reader:
                     listbox.insert(tk.END, f"{row[0]}, {row[1]}")
@@ -42,7 +42,7 @@ def main_menu_GUI():
     def get_all_targets():
         target_list = []
         try:
-            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
+            with open('resources/target_data.csv', 'r') as file:
                 reader = csv.reader(file)
                 for row in reader:
                     target_list += [row[1]]
@@ -62,9 +62,9 @@ def main_menu_GUI():
             listbox.delete(index)
             
             # Remove the selected row from the CSV file
-            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
+            with open('resources/target_data.csv', 'r') as file:
                 lines = file.readlines()
-            with open('twitter_scrape_bot/resources/target_data.csv', 'w') as file:
+            with open('resources/target_data.csv', 'w') as file:
                 writer = csv.writer(file)
                 for i, line in enumerate(lines):
                     if i != index:
@@ -195,7 +195,7 @@ def add_target_GUI():
         if name.strip() == '' or url.strip() == '':
             messagebox.showerror("Error", "Please enter both Name and URL")
         else:
-            with open('twitter_scrape_bot/resources/target_data.csv', 'a', newline='') as file:
+            with open('resources/target_data.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([name, url])
                 messagebox.showinfo("Success", "Data added to CSV successfully")
