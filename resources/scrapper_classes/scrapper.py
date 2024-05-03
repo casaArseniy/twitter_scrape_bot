@@ -45,8 +45,9 @@ class Scrapper():
         input_element.send_keys(Keys.ENTER)
         time.sleep(3)
     
-    def get_OP_posts(self, scroll_number):
-        for i in range(scroll_number):  # Scroll down N times, adjust as needed
+    def get_OP_posts(self, scroll_number, date):
+
+        while True:
             html_content = self.driver.page_source
             html = self.driver.current_url
             time.sleep(1)
@@ -59,7 +60,39 @@ class Scrapper():
                 self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
 
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            last_post_date =  psts[-1].post_date
+
+            try:
+                parsed_date = datetime.strptime(last_post_date, "%b %d, %Y")
+            except:
+                parsed_date = datetime.strptime(last_post_date, "%b %d")
+                new_date = parsed_date.replace(year=2024)
+                parsed_date = new_date
+            
+            last_post_date = parsed_date.strftime("%Y-%m-%d")
+
+            if last_post_date <= date:
+                break
+
+
             time.sleep(2)  # Wait for 2 seconds after each scroll
+
+
+        # for i in range(scroll_number):  # Scroll down N times, adjust as needed
+        #     html_content = self.driver.page_source
+        #     html = self.driver.current_url
+        #     time.sleep(1)
+        #     with open("page.html", "w", encoding="utf-8") as f:
+        #         f.write(html_content)
+            
+        #     psts = get_OP_soup()
+
+        #     for pst in psts:
+        #         self.df_OP = insert_post_into_Table(self.df_OP, html, pst)
+
+        #     self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #     time.sleep(2)  # Wait for 2 seconds after each scroll
     
     def get_OP_name_tags(self):
         self.name_tags = set(self.df_OP['Name Tag'])
@@ -102,8 +135,8 @@ class Scrapper():
         
         return name_tags
     
-    def access_OP_posts(self, scroll_number):
-        self.get_OP_posts(scroll_number)
+    def access_OP_posts(self, scroll_number, date):
+        self.get_OP_posts(scroll_number, date)
     
     def access_COMMENTER_posts(self):
         for index, row in self.df_OP.iterrows():
@@ -127,12 +160,12 @@ class Scrapper():
         table_to_csv(self.df_COMM, name+'_post_comments')
 
     
-    def scrape(self, htmls, scroll_number, ID, PASSWORD):
+    def scrape(self, htmls, scroll_number, date, ID, PASSWORD):
         self.login(ID, PASSWORD)
         for html in htmls:
             self.go_to(html)
             # print("STEP 1")
-            self.access_OP_posts(scroll_number)
+            self.access_OP_posts(scroll_number, date)
             # print("STEP 2")
             self.access_COMMENTER_posts()
             # print("STEP 3")

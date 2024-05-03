@@ -1,9 +1,4 @@
-# from ..gui import *
-# from scrapper_classes.post import Post
-# from table import *
-# from soup import *
-# from credentials import ID, PASSWORD
-# from scrapper_classes.scrapper import Scrapper 
+import datetime
 
 import sys
 sys.path.append(".")
@@ -48,6 +43,19 @@ class TestScrapper(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+    # now = datetime.now()
+    # current_date = now.strftime("%b %d, %Y")
+
+    # date_str = "Dec 13"
+    # try:
+    #     parsed_date = datetime.strptime(date_str, "%b %d, %Y")
+    # except:
+    #     parsed_date = datetime.strptime(date_str, "%b %d")
+    #     new_date = parsed_date.replace(year=2024)
+    #     parsed_date = new_date
+    # print(current_date)
+
+
 
 
 

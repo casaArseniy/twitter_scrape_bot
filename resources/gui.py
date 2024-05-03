@@ -4,6 +4,8 @@ import csv
 from resources.scrapper_classes.scrapper import Scrapper
 from resources.credentials import ID, PASSWORD
 from PIL import Image, ImageTk
+from tkcalendar import Calendar
+from datetime import datetime
 
 
 
@@ -143,27 +145,33 @@ def control_scrapper_GUI(target_list):
     
     def on_start(s):
         try:
-            scroll_number = int(entry.get())
-            if 1 <= scroll_number <= 10:
-                messagebox.showinfo("Valid Input", f"You entered: {scroll_number}")
-            else:
-                raise ValueError("Number out of range (1-10)")
-        except ValueError:
-            messagebox.showerror("Invalid Input", "Please enter a number between 1 and 10.")
+            selected_date = cal.selection_get()
+            selected_date_str = selected_date.strftime("%Y-%m-%d")
 
-        s.start_driver()
-        s.scrape(target_list, scroll_number, ID, PASSWORD)
+            current_date = datetime.now().date()  # Convert to date object
+            current_date_str = current_date.strftime("%Y-%m-%d")
+
+            if selected_date_str > current_date_str:
+                messagebox.showerror("Error", "Date is out of range.")
+            else:
+                s.start_driver()
+                scroll_number = 1
+                s.scrape(target_list, scroll_number, selected_date_str, ID, PASSWORD)
+
+
+        except ValueError:
+            messagebox.showerror("Date is out of range.")
 
     window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    label = tk.Label(window, text="Enter number between 1 and 10  \n to control the how much to scroll \n through target page.")
+    label = tk.Label(window, text="Select a date until which you want to get target posts.")
 
     # Pack the Label widget into the window
     label.pack(pady=20)
 
-    entry = tk.Entry(window)
-    entry.insert(0, 1)
-    entry.pack(pady=20)
+    # Create a Calendar widget for date selection
+    cal = Calendar(window, selectmode="day", date_pattern="yyyy-mm-dd")
+    cal.pack(padx=10, pady=10)
 
     button_function_START = lambda: on_start(s)
     button_START = tk.Button(window, text="START", command=button_function_START)
