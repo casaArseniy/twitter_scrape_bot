@@ -19,7 +19,7 @@ def main_menu_GUI():
     # Show all Twitter targets
     def load_csv_data():
         try:
-            with open('resources/target_data.csv', 'r') as file:
+            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
                 reader = csv.reader(file)
                 for row in reader:
                     listbox.insert(tk.END, f"{row[0]}, {row[1]}")
@@ -42,7 +42,7 @@ def main_menu_GUI():
     def get_all_targets():
         target_list = []
         try:
-            with open('resources/target_data.csv', 'r') as file:
+            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
                 reader = csv.reader(file)
                 for row in reader:
                     target_list += [row[1]]
@@ -62,9 +62,9 @@ def main_menu_GUI():
             listbox.delete(index)
             
             # Remove the selected row from the CSV file
-            with open('resources/target_data.csv', 'r') as file:
+            with open('twitter_scrape_bot/resources/target_data.csv', 'r') as file:
                 lines = file.readlines()
-            with open('resources/target_data.csv', 'w') as file:
+            with open('twitter_scrape_bot/resources/target_data.csv', 'w') as file:
                 writer = csv.writer(file)
                 for i, line in enumerate(lines):
                     if i != index:
@@ -136,18 +136,34 @@ def control_scrapper_GUI(target_list):
 
     s = Scrapper()
 
+
     def on_closing():
         window.destroy()  # Close the GUI window
         main_menu_GUI()
     
     def on_start(s):
-        # s.login(ID, PASSWORD)
+        try:
+            scroll_number = int(entry.get())
+            if 1 <= scroll_number <= 10:
+                messagebox.showinfo("Valid Input", f"You entered: {scroll_number}")
+            else:
+                raise ValueError("Number out of range (1-10)")
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a number between 1 and 10.")
+
         s.start_driver()
-        s.scrape(target_list, 1, ID, PASSWORD)
+        s.scrape(target_list, scroll_number, ID, PASSWORD)
 
     window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    # def start_press_behaviour():
+    label = tk.Label(window, text="Enter number between 1 and 10  \n to control the how much to scroll \n through target page.")
+
+    # Pack the Label widget into the window
+    label.pack(pady=20)
+
+    entry = tk.Entry(window)
+    entry.insert(0, 1)
+    entry.pack(pady=20)
 
     button_function_START = lambda: on_start(s)
     button_START = tk.Button(window, text="START", command=button_function_START)
@@ -179,7 +195,7 @@ def add_target_GUI():
         if name.strip() == '' or url.strip() == '':
             messagebox.showerror("Error", "Please enter both Name and URL")
         else:
-            with open('resources/target_data.csv', 'a', newline='') as file:
+            with open('twitter_scrape_bot/resources/target_data.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([name, url])
                 messagebox.showinfo("Success", "Data added to CSV successfully")
