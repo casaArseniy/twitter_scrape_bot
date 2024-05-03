@@ -31,7 +31,7 @@ PASSWORD = "Your Twitter Password"
 
 - You can either target all targets (using the checkmark) on the list or select a single target from the list.
   
-![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start.png)
+![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start_v2.png)
 
 ## Data
 - Tweet data is saved in the **data** folder.
