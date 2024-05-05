@@ -142,21 +142,21 @@ class Scrapper():
         table_to_csv(self.df_OP, name+'_posts')
         table_to_csv(self.df_COMM, name+'_post_comments')
 
+    def close(self):
+        self.driver.quit()
+
     
     def scrape(self, htmls, date, ID, PASSWORD):
         self.login(ID, PASSWORD)
-        # for html in htmls:
-        #     self.go_to(html)
-        #     # print("STEP 1")
-        #     self.access_OP_posts(date)
-        #     # print("STEP 2")
-        #     self.access_COMMENTER_posts()
-        #     # print("STEP 3")
-        #     self.access_OP_REPLY_posts()
-        #     # print("STEP 4")
-        #     self.save_data(html[20:])
-        #     # print("STEP 5")
-        #     self.clear_data()
-    
-    def close(self):
-        self.driver.quit()
+        for html in htmls:
+            self.go_to(html)
+            # print("STEP 1")
+            # self.access_OP_posts(date)
+            # # print("STEP 2")
+            # self.access_COMMENTER_posts()
+            # # print("STEP 3")
+            # self.access_OP_REPLY_posts()
+            # # print("STEP 4")
+            # self.save_data(html[20:])
+            # # print("STEP 5")
+            # self.clear_data()

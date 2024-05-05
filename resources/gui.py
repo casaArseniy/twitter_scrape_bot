@@ -130,20 +130,46 @@ def control_scrapper_GUI(target_list):
     window.geometry("450x450")
     window.minsize(300, 200)
 
-    s = Scrapper()
-    # d = Scrapper()
-
-
     def on_closing():
         window.destroy()  # Close the GUI window
         main_menu_GUI()
-
     
-    def start_scraping(driver, selected_date_str):
+    def start_scraping(selected_date_str, trgt_lst):
+        driver = Scrapper()
         driver.start_driver()
-        driver.scrape(target_list, selected_date_str, ID, PASSWORD)
+        driver.scrape(trgt_lst, selected_date_str, ID, PASSWORD)
     
-    def on_start(s):
+    def thread_manager(thread_number, selected_date_str):
+        threads = []
+
+        # divide target list between number of threads
+        length = len(target_list)
+
+        if thread_number > length:
+             thread_number = length
+
+        part_length = length // thread_number
+        remainder = length % thread_number
+        
+        start = 0
+        for index in range(thread_number):
+            if index < remainder:
+                end = start + part_length + 1
+            else:
+                end = start + part_length
+    
+            thread = threading.Thread(target=start_scraping, args = (selected_date_str, target_list[start:end]))
+            threads.append(thread)
+
+            start = end
+
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+    
+    def on_start():
         try:
             selected_date = cal.selection_get()
             selected_date_str = selected_date.strftime("%Y-%m-%d")
@@ -151,31 +177,33 @@ def control_scrapper_GUI(target_list):
             current_date = datetime.now().date()  # Convert to date object
             current_date_str = current_date.strftime("%Y-%m-%d")
 
+            thread_number = scale.get()
+
+
             if selected_date_str > current_date_str:
                 messagebox.showerror("Error", "Date is out of range.")
             else:
-                thread1 = threading.Thread(target=start_scraping, args = (s, selected_date_str))
-                # thread2 = threading.Thread(target=start_scraping, args = (d, selected_date_str))
-                thread1.start()
-                # thread2.start()
-                thread1.join()
-                # thread2.join()
+                thread_manager(thread_number, selected_date_str)
         except ValueError:
             messagebox.showerror("Date is out of range.")
 
     window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    label = tk.Label(window, text="Select a date until which you want to get target posts.")
-
-    # Pack the Label widget into the window
-    label.pack(pady=20)
-
     # Create a Calendar widget for date selection
+    label = tk.Label(window, text="Select a date until which you want to get target posts.")
+    label.pack(pady=20)
     cal = Calendar(window, selectmode="day", date_pattern="yyyy-mm-dd")
     cal.pack(padx=10, pady=10)
 
-    button_function_START = lambda: on_start(s)
-    button_START = tk.Button(window, text="START", command=button_function_START)
+    # Create a widget for threads number selection
+    label = tk.Label(window, text="Select number of threads you want to use.")
+    label.pack(pady=20)
+    scale = tk.Scale(window, from_=1, to=5, orient=tk.HORIZONTAL)
+    scale.pack(padx=10, pady=10)
+
+
+    # button_function_START = lambda: on_start()
+    button_START = tk.Button(window, text="START", command=on_start)
     button_START.pack(pady=20)
 
     back_button = tk.Button(window, text="BACK", command=on_closing)
