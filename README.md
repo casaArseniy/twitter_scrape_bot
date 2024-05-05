@@ -24,7 +24,7 @@ PASSWORD = "Your Twitter Password"
   
 ![main_menu screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/main_menu_v2.png)
 
-- You can either target all targets (using the checkmark) on the list or select targets manually from from the list.
+- You can either target all targets (using the checkmark) on the list or select targets manually from the list.
 
   
 ![add_target screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/add_target.png)
