@@ -6,6 +6,7 @@ from resources.credentials import ID, PASSWORD
 from PIL import Image, ImageTk
 from tkcalendar import Calendar
 from datetime import datetime
+import threading
 
 
 
@@ -80,7 +81,7 @@ def main_menu_GUI():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     # Create a Listbox to display target list
-    listbox = tk.Listbox(window, yscrollcommand=scrollbar.set, height=10)
+    listbox = tk.Listbox(window, yscrollcommand=scrollbar.set, height=10, selectmode='multiple')
     listbox.pack(fill=tk.BOTH, expand=True)
 
     # Configure scrollbar to work with Listbox
@@ -137,11 +138,17 @@ def control_scrapper_GUI(target_list):
     window.minsize(300, 200)
 
     s = Scrapper()
+    # d = Scrapper()
 
 
     def on_closing():
         window.destroy()  # Close the GUI window
         main_menu_GUI()
+
+    
+    def start_scraping(driver, selected_date_str):
+        driver.start_driver()
+        driver.scrape(target_list, selected_date_str, ID, PASSWORD)
     
     def on_start(s):
         try:
@@ -154,11 +161,12 @@ def control_scrapper_GUI(target_list):
             if selected_date_str > current_date_str:
                 messagebox.showerror("Error", "Date is out of range.")
             else:
-                s.start_driver()
-                scroll_number = 1
-                s.scrape(target_list, scroll_number, selected_date_str, ID, PASSWORD)
-
-
+                thread1 = threading.Thread(target=start_scraping, args = (s, selected_date_str))
+                # thread2 = threading.Thread(target=start_scraping, args = (d, selected_date_str))
+                thread1.start()
+                # thread2.start()
+                thread1.join()
+                # thread2.join()
         except ValueError:
             messagebox.showerror("Date is out of range.")
 
