@@ -24,14 +24,16 @@ PASSWORD = "Your Twitter Password"
   
 ![main_menu screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/main_menu.png)
 
-- Adding a target, saves the target to target_data.csv file. Add a name for the target and a valid HTML link to their profile. Input error checks are not implemented so you'll have to be careful when inputting links to not break the program.
+- You can either target all targets (using the checkmark) on the list or select a single target from the list.
 
   
 ![add_target screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/add_target.png)
 
-- You can either target all targets (using the checkmark) on the list or select a single target from the list.
-  
-![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start.png)
+- Adding a target, saves the target to target_data.csv file. Add a name for the target and a valid HTML link to their profile. Input error checks are not implemented so you'll have to be careful when inputting links to not break the program.
+    
+![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start_v2.png)
+
+- Select the date until which you want to scrape data from the target.
 
 ## Data
 - Tweet data is saved in the **data** folder.

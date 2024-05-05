@@ -6,16 +6,13 @@ from resources.credentials import ID, PASSWORD
 from PIL import Image, ImageTk
 from tkcalendar import Calendar
 from datetime import datetime
+import threading
 
 
 
 def main_menu_GUI():
     window = tk.Tk()
-    # im = Image.open('mri.jpeg')
-    # photo = ImageTk.PhotoImage(im)
-    # window.iconphoto(True, photo)
     window.title("Menu")
-    # window.geometry("300x650")
     window.minsize(300, 450)
 
     # Show all Twitter targets
@@ -28,16 +25,13 @@ def main_menu_GUI():
         except FileNotFoundError:
             listbox.insert(tk.END, f"Name: , URL: ")
     
-    def get_single_target():
+    def get_selected_targets():
         # Get the index of the selected item
-        selected_index = listbox.curselection()
-        # If an item is selected, get its text
-        if selected_index:
-            index = int(selected_index[0])
-            selected_text = listbox.get(index)
-            
-            # Split the text using comma as separator and get the second part
-            return [selected_text.split(',')[1].strip()]
+        selected_indices = listbox.curselection()
+        selected_items = [(listbox.get(index)).split(',')[1].strip() for index in selected_indices]
+
+        if selected_items:
+            return selected_items
         else:
             messagebox.showwarning("Warning", "Please select a target.")
     
@@ -57,20 +51,20 @@ def main_menu_GUI():
 
     
     # Delete a target from list
-    def delete_selected_row():
-        selected_index = listbox.curselection()
-        if selected_index:
-            index = int(selected_index[0])
-            listbox.delete(index)
-            
-            # Remove the selected row from the CSV file
-            with open('resources/target_data.csv', 'r') as file:
-                lines = file.readlines()
-            with open('resources/target_data.csv', 'w') as file:
-                writer = csv.writer(file)
-                for i, line in enumerate(lines):
-                    if i != index:
-                        writer.writerow(line.strip().split(','))
+    def delete_selected_rows():
+        selected_indices = list(listbox.curselection())
+        if selected_indices:
+            for selected_index in reversed(selected_indices):
+                index = int(selected_index)
+                listbox.delete(index)
+                # Remove the selected row from the CSV file
+                with open('resources/target_data.csv', 'r') as file:
+                    lines = file.readlines()
+                with open('resources/target_data.csv', 'w') as file:
+                    writer = csv.writer(file)
+                    for i, line in enumerate(lines):
+                        if i != index:
+                            writer.writerow(line.strip().split(','))
 
         else:
             messagebox.showwarning("Warning", "Please select a row to delete")
@@ -80,7 +74,7 @@ def main_menu_GUI():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     # Create a Listbox to display target list
-    listbox = tk.Listbox(window, yscrollcommand=scrollbar.set, height=10)
+    listbox = tk.Listbox(window, yscrollcommand=scrollbar.set, height=10, selectmode='multiple')
     listbox.pack(fill=tk.BOTH, expand=True)
 
     # Configure scrollbar to work with Listbox
@@ -98,7 +92,7 @@ def main_menu_GUI():
         if var.get():
             target_list = get_all_targets()
         else:
-            target_list = get_single_target()
+            target_list = get_selected_targets()
         
         if target_list:
             window.destroy()
@@ -114,7 +108,7 @@ def main_menu_GUI():
     button_ADD_TARGET.pack(pady=20)
 
     # Delete a target manually
-    delete_button = tk.Button(window, text="Delete Selected Row", command=delete_selected_row)
+    delete_button = tk.Button(window, text="Delete Selected Rows", command=delete_selected_rows)
     delete_button.pack(pady=10)
 
     # Start scrapping targets from Twitter
@@ -136,14 +130,46 @@ def control_scrapper_GUI(target_list):
     window.geometry("450x450")
     window.minsize(300, 200)
 
-    s = Scrapper()
-
-
     def on_closing():
         window.destroy()  # Close the GUI window
         main_menu_GUI()
     
-    def on_start(s):
+    def start_scraping(selected_date_str, trgt_lst):
+        driver = Scrapper()
+        driver.start_driver()
+        driver.scrape(trgt_lst, selected_date_str, ID, PASSWORD)
+    
+    def thread_manager(thread_number, selected_date_str):
+        threads = []
+
+        # divide target list between number of threads
+        length = len(target_list)
+
+        if thread_number > length:
+             thread_number = length
+
+        part_length = length // thread_number
+        remainder = length % thread_number
+        
+        start = 0
+        for index in range(thread_number):
+            if index < remainder:
+                end = start + part_length + 1
+            else:
+                end = start + part_length
+    
+            thread = threading.Thread(target=start_scraping, args = (selected_date_str, target_list[start:end]))
+            threads.append(thread)
+
+            start = end
+
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+    
+    def on_start():
         try:
             selected_date = cal.selection_get()
             selected_date_str = selected_date.strftime("%Y-%m-%d")
@@ -151,30 +177,33 @@ def control_scrapper_GUI(target_list):
             current_date = datetime.now().date()  # Convert to date object
             current_date_str = current_date.strftime("%Y-%m-%d")
 
+            thread_number = scale.get()
+
+
             if selected_date_str > current_date_str:
                 messagebox.showerror("Error", "Date is out of range.")
             else:
-                s.start_driver()
-                scroll_number = 1
-                s.scrape(target_list, scroll_number, selected_date_str, ID, PASSWORD)
-
-
+                thread_manager(thread_number, selected_date_str)
         except ValueError:
             messagebox.showerror("Date is out of range.")
 
     window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    label = tk.Label(window, text="Select a date until which you want to get target posts.")
-
-    # Pack the Label widget into the window
-    label.pack(pady=20)
-
     # Create a Calendar widget for date selection
+    label = tk.Label(window, text="Select a date until which you want to get target posts.")
+    label.pack(pady=20)
     cal = Calendar(window, selectmode="day", date_pattern="yyyy-mm-dd")
     cal.pack(padx=10, pady=10)
 
-    button_function_START = lambda: on_start(s)
-    button_START = tk.Button(window, text="START", command=button_function_START)
+    # Create a widget for threads number selection
+    label = tk.Label(window, text="Select number of threads you want to use.")
+    label.pack(pady=20)
+    scale = tk.Scale(window, from_=1, to=5, orient=tk.HORIZONTAL)
+    scale.pack(padx=10, pady=10)
+
+
+    # button_function_START = lambda: on_start()
+    button_START = tk.Button(window, text="START", command=on_start)
     button_START.pack(pady=20)
 
     back_button = tk.Button(window, text="BACK", command=on_closing)
@@ -236,5 +265,3 @@ def add_target_GUI():
     back_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
     window.mainloop()
-
-# input_GUI()
