@@ -33,7 +33,7 @@ PASSWORD = "Your Twitter Password"
     
 ![start screenshot](https://github.com/casaArseniy/twitter_scrape_bot/blob/main/readme_images/start_v3.png)
 
-- Select the date until which you want to scrape data from the target.
+- Select the date (in the past) until which you want to scrape data from the target from the present.
 - Select the number of threads (simultaneous browser windows) you want to use. Targets will be divided equally between threads.
 
 ## Data
