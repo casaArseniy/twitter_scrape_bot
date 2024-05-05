@@ -127,8 +127,8 @@ def main_menu_GUI():
 def control_scrapper_GUI(target_list):
     window = tk.Tk()
     window.title("Test Scrapping")
-    window.geometry("450x450")
-    window.minsize(300, 200)
+    window.geometry("450x550")
+    window.minsize(450, 550)
 
     def on_closing():
         window.destroy()  # Close the GUI window
