@@ -168,6 +168,8 @@ def control_scrapper_GUI(target_list):
 
         for thread in threads:
             thread.join()
+        
+        messagebox.showwarning("Alert", "Scrapping Finished")
     
     def on_start():
         try:

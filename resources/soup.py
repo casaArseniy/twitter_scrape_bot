@@ -28,15 +28,18 @@ def get_OP_soup():
     posts = []
     for c in cards:
         message = c.find('div', class_='css-1rynq56 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim')
+        tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+        date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
+        stats = c.find_all('span', attrs={'data-testid': 'app-text-transition-container'})
+
+        if tag is None or date is None:
+            continue
+
         if message is None:
             message_text = ''
         else:
             message_text = message.text
 
-        tag = c.find('div', class_='css-1rynq56 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
-        date = c.find('div', class_='css-175oi2r r-18u37iz r-1q142lx')
-
-        stats = c.find_all('span', attrs={'data-testid': 'app-text-transition-container'})
         num_reply = 0
         if stats[0].text!='':
             num_reply=int(stats[0].text)
